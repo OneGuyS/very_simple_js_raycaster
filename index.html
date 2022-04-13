@@ -12,24 +12,31 @@
     </style>
     <script src="engine.js"></script>
 </head>
-<body>
+<body style="text-align: center; margin: 0px; padding: 0px; margin-top: 0px;">
     
-<table>
-<tr>
-    <th>
-    <canvas id="canvas" width="1280" height="720" style="background-color: azure;"></canvas><h1>VERY_SIMPLE_JS-RayCaster</h1>
-     
+<table style="text-align: center; margin: 0px; padding: 0px; margin-top: 0px;">
+<tr style="text-align: center; margin: 0px; padding: 0px; margin-top: 0px;">
+    <th style="text-align: center; margin: 0px; padding: 0px; margin-top: 0px;">
+    <h1 id="d" style="text-align: center;">VERY_SIMPLE_JS-RayCaster</h1>
+    <p id="c">Resolution : </p>
+    <form>
+        <p id="a">X : <input type="number" name="" id="x" oninput="SetRes()" ></p>
+        <p id="b">Y : <input type="number" name="" id="y" oninput="SetRes()" ></p>
+        <script>set_res()</script>
+    </form>
     <input id="b1" type="button" value="Start demo 1" onclick="refresher()">
     <input id="b2" type="button" value="Start demo 2" onclick="refresher(1)">
-    <input id="b3" type="button" value="Start Random genrated map" onclick="refresher(2)">
+    <input id="b3" type="button" value="Start Random genrated map (2048x2048 cells / cpu heavy)" onclick="refresher(2)">
     
     </th><th>
-<p id="player_x">null</p>
-<p id="player_y">null</p>
-<p id="angle">null</p>
-<p id="speed">null</p>
-<p id="r_speed">null</p>
-<p id="g_speed">null</p>
+<p id="player_x"></p>
+<p id="player_y"></p>
+<p id="angle"></p>
+<p id="speed"></p>
+<p id="r_speed"></p>
+<p id="g_speed"></p>
+
+<p id="fps" style="position: absolute;"></p>
 </th>
 </tr>
 </table>
