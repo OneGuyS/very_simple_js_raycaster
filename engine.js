@@ -16,15 +16,15 @@ var map = [
 [1, 1, 1, 1,  1, 1, 1, 1,  1, 1, 1],
 [1, 0, 0, 0,  0, 0, 0, 0,  0, 0, 1],
 [1, 0, 0, 0,  0, 0, 0, 0,  0, 0, 1],
-[1, 0, 0, 2,  0, 0, 0, 3,  0, 0, 1],
+[1, "#af8665", 0, 2,  0, 0, 0, 3,  0, 0, 1],
 [1, 0, 0, 0,  0, 0, 0, 0,  0, 0, 1],
-[1, 0, 0, 4,  0, 0, 0, 5,  0, 0, 1],
+[1, "#6f8a9c", 0, 4,  0, 0, 0, 5,  0, 0, 1],
 [1, 0, 0, 0,  0, 0, 0, 0,  0, 0, 1],
-[1, 0, 0, 6,  0, 0, 0, 7,  0, 0, 1],
+[1, "#123456", 0, 6,  0, 0, 0, 7,  0, 0, 1],
 [1, 0, 0, 0,  0, 0, 0, 0,  0, 0, 1],
-[1, 0, 0, 8,  0, 0, 0, 9,  0, 0, 1],
+[1, "#aabbff", 0, 8,  0, 0, 0, 9,  0, 0, 1],
 [1, 0, 0, 0,  0, 0, 0, 0,  0, 0, 1],
-[1, 0, 0, 10, 0, 0, 0, 11, 0, 0, 1],
+[1, "#a1b2c3", 0, 10, 0, 0, 0, 11, 0, 0, 1],
 [1, 0, 0, 0,  0, 0, 0, 0,  0, 0, 1],
 [1, 0, 0, 0,  0, 0, 0, 0,  0, 0, 1],
 [1, 1, 1, 1,  1, 1, 1, 1,  1, 1, 1],
@@ -45,7 +45,7 @@ const lvl = [
   [11, 0, 7, 7,  0, 0, 0, 9,  9, 9, 11],
   [11, 0, 7, 7,  0, 0, 0, 0,  0, 0, 9],
   [11, 0, 0, 0,  0, 0, 0, 9,  0, 0, 9],
-  [11, 11, 11, 11,  11, 11, 11, 99,  9, 9, 11],
+  [11, 11, 11, 11,  11, 11, 11, 9,  9, 9, 11],
   ];
 
 //random map variable
@@ -58,7 +58,7 @@ for (var i = 0; i < inf.length; i++) {
 
 // blocks for random blocks func
 
-var blocks = [1,2,3,4,5,6,7,8,9,10,11]
+var blocks = [2,3,4,5,6,7,8,9,10,11]
 
 function render_inf_map(){
 
@@ -72,12 +72,13 @@ function render_inf_map(){
         inf[i][j] = 1;
       }else{
         if (Math.random() <= 0.05){
-        inf[i][j] = Math.floor(Math.random() * blocks.length);
+        inf[i][j] = Math.floor(Math.random() * blocks.length + 2);
         }else{
           inf[i][j]=0;
         }
       }
     }
+    inf[Math.floor((player.x / CELL_SIZE))][Math.floor((player.y / CELL_SIZE))]=0;
   }
 
   //spawn save zone
@@ -109,12 +110,23 @@ function toRadians(deg) {
     return (deg * Math.PI) / 180;
 }
 
+function toDegres(rad) {
+    return (rad / Math.PI) * 180;
+}
+
 function PrintPlayrInfo() {
+  if (toDegres(player.angle) > 360){
+    player.angle = 0;
+  }
+  if (toDegres(player.angle) < 0){
+    player.angle = toRadians(360);
+  }
     document.getElementById("player_x").innerHTML = "Player X : " + player.x;
     document.getElementById("player_y").innerHTML = "Player Y : " + player.y;
-    document.getElementById("angle").innerHTML = "Camera angle : " + player.angle;
-    document.getElementById("speed").innerHTML = "Player speed : " + player.speed;
+    document.getElementById("angle").innerHTML = "Camera angle : " + Math.floor(toDegres(player.angle));
+    document.getElementById("speed").innerHTML = "Player front speed : " + player.speed;
     document.getElementById("r_speed").innerHTML = "Player right speed : " + player.right_speed;
+    document.getElementById("g_speed").innerHTML = "Speed vector lenght : " + (Math.sqrt(Math.pow(Math.abs(player.right_speed),2) + Math.pow(Math.abs(player.speed),2)));
 }
 
 function out_of_bounds(x, y) {
@@ -234,6 +246,27 @@ function calculate_colision_rays() {
 
 // Render stuff
 
+function ShadeColor(color) {
+  var output = "#ffffff";
+  var output = color;
+  output = output.replace(/b/g, "d");
+  output = output.replace(/a/g, "c");
+  output = output.replace(/9/g, "b");
+  output = output.replace(/8/g, "a");
+  output = output.replace(/7/g, "8");
+  output = output.replace(/6/g, "7");
+  output = output.replace(/5/g, "6");
+  output = output.replace(/4/g, "5");
+  output = output.replace(/3/g, "4");
+  output = output.replace(/2/g, "3");
+  output = output.replace(/1/g, "2");
+  output = output.replace(/0/g, "2");
+  output = output.replace(/d/g, "c");
+  output = output.replace(/e/g, "d");
+  output = output.replace(/f/g, "e");
+  return output;
+}
+
 function getRandomColor() {
   var letters = '0123456789ABCDEF'.split('');
   var color = '#';
@@ -260,8 +293,8 @@ const COLORS = {
     cyan_v: "#44ffff",
     magenta: "#ff00ff",
     magenta_v: "#ff33ff",
-    white: "#dddddd",
-    white_v: "#ffffff",
+    white: "#ffffff",
+    white_v: "#dddddd",
     grey: "#888888",
     grey_v: "#aaaaaa",
     dark: "#333333",
@@ -365,27 +398,27 @@ const COLORS = {
       } else if(wall == 1) {
         wall_color = getRandomColor();
       } else if(wall == 2) {
-        wall_color = COLORS.red_v;
+        wall_color = ShadeColor(COLORS.red);
       } else if(wall == 3) {
-        wall_color = COLORS.green_v;
+        wall_color = ShadeColor(COLORS.green);
       } else if(wall == 4) {
-        wall_color = COLORS.blue_v;
+        wall_color = ShadeColor(COLORS.blue);
       } else if(wall == 5) {
-        wall_color = COLORS.yellow_v;
+        wall_color = ShadeColor(COLORS.yellow);
       } else if(wall == 6) {
-        wall_color = COLORS.orange_v;
+        wall_color = ShadeColor(COLORS.orange);
       } else if(wall == 7) {
-        wall_color = COLORS.cyan_v;
+        wall_color = ShadeColor(COLORS.cyan);
       } else if(wall == 8) {
-        wall_color = COLORS.magenta_v;
+        wall_color = ShadeColor(COLORS.magenta);
       } else if(wall == 9) {
-        wall_color = COLORS.white_v;
+        wall_color = ShadeColor(COLORS.white);
       } else if(wall == 10) {
-        wall_color = COLORS.grey_v;
+        wall_color = ShadeColor(COLORS.grey);
       } else if(wall == 11) {
-        wall_color = COLORS.black_v;
+        wall_color = ShadeColor(COLORS.black);
       } else{
-        wall_color = wall;
+        wall_color = ShadeColor(wall);
       }
     }
     return {
@@ -463,6 +496,8 @@ function refresher(level) {
     }else if(level == 1){
       map = lvl;
     }else if(level == 2){
+      player.x = (Math.random() * CELL_SIZE * 2047)
+      player.y = (Math.random() * CELL_SIZE * 2047)
       render_inf_map()
       map = inf;
     }
@@ -517,3 +552,5 @@ document.addEventListener("mousemove", (e) => {
 // simple game to show capabilities of engine
 
 // conf file
+
+// user map loader
