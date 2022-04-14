@@ -31,23 +31,25 @@ function SetRes() {
   screen_y = document.getElementById("y").value;}
 
   
-var delta = 2;
+var delta = 1 / 60;
 
 //maps
+
+var rotaion_speed = 0;
 
 var map = [
 [1, 1, 1, 1,  1, 1, 1, 1,  1, 1, 1],
 [1, 0, 0, 0,  0, 0, 0, 0,  0, 0, 1],
 [1, 0, 0, 0,  0, 0, 0, 0,  0, 0, 1],
-[1, "#af8665", 0, 2,  0, 0, 0, 3,  0, 0, 1],
+[1, "#af8665", 0, 2,  0, 0, 0, 3,  0, "#ff0fff", 1],
 [1, 0, 0, 0,  0, 0, 0, 0,  0, 0, 1],
-[1, "#6f8a9c", 0, 4,  0, 0, 0, 5,  0, 0, 1],
+[1, "#6f8a9c", 0, 4,  0, 0, 0, 5,  0, "#ffeeff", 1],
 [1, 0, 0, 0,  0, 0, 0, 0,  0, 0, 1],
-[1, "#123456", 0, 6,  0, 0, 0, 7,  0, 0, 1],
+[1, "#123456", 0, 6,  0, 0, 0, 7,  0, "#efcbff", 1],
 [1, 0, 0, 0,  0, 0, 0, 0,  0, 0, 1],
-[1, "#aabbff", 0, 8,  0, 0, 0, 9,  0, 0, 1],
+[1, "#aabbff", 0, 8,  0, 0, 0, 9,  0, "#f1234f", 1],
 [1, 0, 0, 0,  0, 0, 0, 0,  0, 0, 1],
-[1, "#a1b2c3", 0, 10, 0, 0, 0, 11, 0, 0, 1],
+[1, "#a1b2c3", 0, 10, 0, 0, 0, 11, 0, "#ff7aff", 1],
 [1, 0, 0, 0,  0, 0, 0, 0,  0, 0, 1],
 [1, 0, 0, 0,  0, 0, 0, 0,  0, 0, 1],
 [1, 1, 1, 1,  1, 1, 1, 1,  1, 1, 1],
@@ -123,19 +125,22 @@ const player = {
 }
 
 function movePlayer(){
-    player.x += Math.cos(player.angle) * player.speed / delta;
-    player.y += Math.sin(player.angle) * player.speed / delta;
-    player.x += Math.cos(player.angle + toRadians(90)) * player.right_speed / delta;
-    player.y += Math.sin(player.angle + toRadians(90)) * player.right_speed / delta;
+    player.x += Math.cos(player.angle) * player.speed * 120 * delta;
+    player.y += Math.sin(player.angle) * player.speed * 120 * delta;
+    player.x += Math.cos(player.angle + toRadians(90)) * player.right_speed * 120 * delta;
+    player.y += Math.sin(player.angle + toRadians(90)) * player.right_speed * 120 * delta;
+    player.angle += toRadians(rotaion_speed * 80 * delta );
 }
 
 function toRadians(deg) {
-    return (deg * Math.PI) / 180;
+    return (deg * 3.141592) / 180;
 }
 
 function toDegres(rad) {
-    return (rad / Math.PI) * 180;
+    return (rad / 3.141592) * 180;
 }
+
+var dev = true;
 
 function PrintPlayrInfo() {
   if (toDegres(player.angle) > 360){
@@ -144,13 +149,25 @@ function PrintPlayrInfo() {
   if (toDegres(player.angle) < 0){
     player.angle = toRadians(360);
   }
-    //document.getElementById("player_x").innerHTML = "Player X : " + player.x;
-    //document.getElementById("player_y").innerHTML = "Player Y : " + player.y;
-    //document.getElementById("angle").innerHTML = "Camera angle : " + Math.floor(toDegres(player.angle));
-    //document.getElementById("speed").innerHTML = "Player front speed : " + player.speed;
-    //document.getElementById("r_speed").innerHTML = "Player right speed : " + player.right_speed;
-    //document.getElementById("g_speed").innerHTML = "Speed vector lenght : " + (Math.sqrt(Math.pow(Math.abs(player.right_speed),2) + Math.pow(Math.abs(player.speed),2)));
-}
+   if (dev == true){
+    document.getElementById("player_x").innerHTML = "Player X : " + player.x;
+    document.getElementById("player_y").innerHTML = "Player Y : " + player.y;
+    document.getElementById("angle").innerHTML = "Camera angle : " + Math.floor(toDegres(player.angle));
+    document.getElementById("speed").innerHTML = "Player front speed : " + player.speed;
+    document.getElementById("r_speed").innerHTML = "Player right speed : " + player.right_speed;
+    document.getElementById("g_speed").innerHTML = "Speed vector lenght : " + (Math.sqrt(Math.pow(Math.abs(player.right_speed),2) + Math.pow(Math.abs(player.speed),2)));
+    document.getElementById("f").innerHTML = "Press \"F\" to hide dev menu.";
+  }else{
+    document.getElementById("player_x").innerHTML = "";
+    document.getElementById("player_y").innerHTML = "";
+    document.getElementById("angle").innerHTML = "";
+    document.getElementById("speed").innerHTML = "";
+    document.getElementById("r_speed").innerHTML = "";
+    document.getElementById("g_speed").innerHTML = "";
+    document.getElementById("f").innerHTML = "";
+  }
+  }
+
 
 function out_of_bounds(x, y) {
     return x < 0 || x >= map[0].length || y < 0 || y >= map.length;
@@ -158,13 +175,13 @@ function out_of_bounds(x, y) {
 
 
 function distance_to(x1, y1, x2, y2) {
-    return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+    return Math.sqrt((x2 - x1)*(x2 - x1) + (y2 - y1)*(y2 - y1));
   }
 
 //colisions (copied from render ray casting but instead of rendering we stop player)
 
 function callVCollision(angle) {
-  const right = Math.abs(Math.floor((angle - Math.PI / 2) / Math.PI) % 2);
+  const right = Math.abs(Math.floor((angle - 1.570795) / 3.141592) % 2);
 
   const firstX = right
     ? Math.floor(player.x / CELL_SIZE) * CELL_SIZE + CELL_SIZE
@@ -199,7 +216,7 @@ function callVCollision(angle) {
 }
 
 function callHCollision(angle) {
-  const up = Math.abs(Math.floor(angle / Math.PI) % 2);
+  const up = Math.abs(Math.floor(angle / 3.141592 ) % 2);
   const firstY = up
     ? Math.floor(player.y / CELL_SIZE) * CELL_SIZE
     : Math.floor(player.y / CELL_SIZE) * CELL_SIZE + CELL_SIZE;
@@ -232,33 +249,29 @@ function callHCollision(angle) {
   return distance_to(player.x, player.y, nextX, nextY);
 }
 
-var last_valid_cords_x;
-var last_valid_cords_y;
 
 function cast_col_ray(angle) {
+
   const vCollision = callVCollision(angle);
   const hCollision = callHCollision(angle);
   var i=0;
 
   if(vCollision < 10 || hCollision < 10 ){
-    player.x = last_valid_cords_x;
-    player.y = last_valid_cords_y;
-    player.x += Math.cos(player.angle) * player.speed * -1  / delta;
-    player.y += Math.sin(player.angle) * player.speed * -1  / delta;
-    player.x += Math.cos(player.angle + toRadians(90)) * player.right_speed * -1  / delta;
-    player.y += Math.sin(player.angle + toRadians(90)) * player.right_speed * -1  / delta;
+    player.x += Math.cos(player.angle) * player.speed * -120  * delta;
+    player.y += Math.sin(player.angle) * player.speed * -120  * delta;
+    player.x += Math.cos(player.angle + toRadians(90)) * player.right_speed * -120  * delta;
+    player.y += Math.sin(player.angle + toRadians(90)) * player.right_speed * -120  * delta;
+    player.x += Math.cos(angle) * player.speed * -100  * delta;
+    player.y += Math.sin(angle) * player.speed * -100  * delta;
+    movePlayer();
     i = 1;
-  }else{
-    last_valid_cords_x = player.x;
-    last_valid_cords_y = player.y;
   }
-
   return i;
 }
 
 function calculate_colision_rays() {
   const initialAngle = player.angle - toRadians(360) / 2;
-  const numberOfRays = 128;
+  const numberOfRays = 32;
   const angleStep = toRadians(360) / numberOfRays;
   return Array.from({ length: numberOfRays }, (_, i) => {
     const angle = initialAngle + i * angleStep;
@@ -344,7 +357,7 @@ const COLORS = {
 
   function getVCollision(angle) {
     var wall_color = COLORS.red;
-    const right = Math.abs(Math.floor((angle - Math.PI / 2) / Math.PI) % 2);
+    const right = Math.abs(Math.floor((angle - 1.570795) / 3.141592) % 2);
   
     const firstX = right
       ? Math.floor(player.x / CELL_SIZE) * CELL_SIZE + CELL_SIZE
@@ -407,7 +420,7 @@ const COLORS = {
   
   function getHCollision(angle) {
     var wall_color = COLORS.red;
-    const up = Math.abs(Math.floor(angle / Math.PI) % 2);
+    const up = Math.abs(Math.floor(angle / 3.141592) % 2);
     const firstY = up
       ? Math.floor(player.y / CELL_SIZE) * CELL_SIZE
       : Math.floor(player.y / CELL_SIZE) * CELL_SIZE + CELL_SIZE;
@@ -487,17 +500,19 @@ const COLORS = {
   }
 
 //render to screen function
+                                  //   _
+var lastLoop = new Date();        //    \
+                                  //    |
+function draw() {                 //    >  this is to calculate framerate and delta.
+                                  //    |
+  var thisLoop = new Date();      //   _/
+                                  //
 
-var lastLoop = new Date();
-
-function draw() {
-
-  var thisLoop = new Date();
   var fps = 1000 / (thisLoop - lastLoop);
   lastLoop = thisLoop;
-  delta = fps / 60;
+  delta = 1 / fps;
 
-  document.getElementById("fps").innerHTML = fps;
+  document.getElementById("fps").innerHTML = "FPS : " + Math.floor(fps);
 
     const canvas = document.getElementById('canvas');
     const context = canvas.getContext('2d');
@@ -505,7 +520,7 @@ function draw() {
     const rays = getRays();
 
     rays.forEach((ray, i) => {
-      const distance = ray.distance;
+      const distance = ray.distance ; //* Math.cos(ray.angle - player.angle);  <- this is not used because of wierd glitch probaly from rounding (not using math.PI but pre calculate sipler value)
       const wallHeight = ((CELL_SIZE * ( 3 * canvas_size_x / 1280)) / distance) * 256;
       context.fillStyle = ray.vertical ? ray.color : ray.color;
       context.fillRect(i, canvas_size_y / 2 - wallHeight / 2, 1, wallHeight);
@@ -524,7 +539,9 @@ function draw() {
       circle.arc( (canvas_size_x/2) , (canvas_size_y/2), 3, 0, 2 * Math.PI);
       
       context.fillStyle = 'white';
-      //context.fill(circle); //corsair to use with fps games
+      if (dev == true){
+      //context.fill(circle); //corsair to use with fps games (idk why high fps impact)
+      }
     });
 }
 
@@ -535,16 +552,16 @@ function Tick() {
     calculate_colision_rays();
 }
 
-function refresher(level) {
+function Start(option) {
     CreateCanvas();
 
       //map selector
 
-    if(!level){
+    if(!option){
 
-    }else if(level == 1){
+    }else if(option == 1){
       map = lvl;
-    }else if(level == 2){
+    }else if(option == 2){
       player.x = (Math.random() * CELL_SIZE * 2047)
       player.y = (Math.random() * CELL_SIZE * 2047)
       render_inf_map()
@@ -554,23 +571,32 @@ function refresher(level) {
       document.getElementById('b2').parentNode.removeChild(document.getElementById('b2'));
       document.getElementById('b3').parentNode.removeChild(document.getElementById('b3'));
 
-      var DrawFrame = setInterval(Tick, 1);
+      var DrawFrame = setInterval(Tick, 1000/144); //set max fps to 144fps (you need beafy gpu to achife this fps)
 }
 
 // inputs
 
 document.addEventListener("keydown", (e) => {
     if(e.key == "w"){
-        player.speed = 2 ;
+        player.speed = 1 ;
     }
     if(e.key == "s"){
-        player.speed = -2 ;
+        player.speed = -1 ;
     }
     if(e.key == "d"){
-        player.right_speed = 2 ;
+        player.right_speed = 1 ;
     }
     if(e.key == "a"){
-        player.right_speed = -2;
+        player.right_speed = -1;
+    }
+    if(e.key == "f"){
+        dev = !dev;
+    }
+    if(e.key == "ArrowRight"){
+      rotaion_speed = 1;
+    }
+    if(e.key == "ArrowLeft"){
+      rotaion_speed = -1;
     }
 })
 
@@ -581,24 +607,28 @@ document.addEventListener("keyup", (e) => {
     if(e.key == "a" || e.key == "d"){
         player.right_speed = 0;
     }
+    if(e.key == "ArrowLeft" || e.key == "ArrowRight"){
+      rotaion_speed = 0;
+    }
 })
 
-document.addEventListener("mousemove", (e) => {
-    player.angle += toRadians(e.movementX /1.5 / delta );
-})
+//mouse rotaion (i dont use it because im too stupid and i couldnt hide it and keep in window)
 
+//document.addEventListener("mousemove", (e) => {
+//    player.angle += toRadians(e.movementX * 25 * delta );
+//})
 
 // Todo 
 
-// texture render
+// texture render                               <- to hard for me now.
 
-// sprites
+// sprites                                      <- to hard for me now.
 
-// better colisions
+// better colisions                             <- DONE.
 
-// better camera controll
+// better camera controll                       <- done sort of.
 
-// simple game to show capabilities of engine
+// simple game to show capabilities of engine   <- i will do first 2 oints.
 
 // conf file
 

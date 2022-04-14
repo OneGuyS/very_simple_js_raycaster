@@ -1,4 +1,4 @@
-# very_simple_js_raycaster
+very_simple_js_raycaster
 just learning js
 
 to live test visit http://vhs.42web.io/js_raycaster/
@@ -7,15 +7,15 @@ its very primitive program with much stuff to do but its learning expierience
 
 // Todo 
 
-// texture render
+// texture render                               <- to hard for me now.
 
-// sprites
+// sprites                                      <- to hard for me now.
 
-// better colisions
+// better colisions                             <- DONE.
 
-// better camera controll
+// better camera controll                       <- done sort of.
 
-// simple game to show capabilities of engine
+// simple game to show capabilities of engine   <- i will do first 2 oints.
 
 // conf file
 

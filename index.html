@@ -24,19 +24,20 @@
         <p id="b">Y : <input type="number" name="" id="y" oninput="SetRes()" ></p>
         <script>set_res()</script>
     </form>
-    <input id="b1" type="button" value="Start demo 1" onclick="refresher()">
-    <input id="b2" type="button" value="Start demo 2" onclick="refresher(1)">
-    <input id="b3" type="button" value="Start Random genrated map (2048x2048 cells / cpu heavy)" onclick="refresher(2)">
+    <input id="b1" type="button" value="Start demo 1" onclick="Start()">
+    <input id="b2" type="button" value="Start demo 2" onclick="Start(1)">
+    <input id="b3" type="button" value="Start Random genrated map (2048x2048 cells / cpu heavy)" onclick="Start(2)">
     
     </th><th>
-<p id="player_x"></p>
-<p id="player_y"></p>
-<p id="angle"></p>
-<p id="speed"></p>
-<p id="r_speed"></p>
-<p id="g_speed"></p>
+<p id="fps" style="position: absolute; margin-top: 0px;"></p>
+<p id="player_x" style="position: absolute; margin-top: 20px;"></p>
+<p id="player_y" style="position: absolute; margin-top: 40px;"></p>
+<p id="angle" style="position: absolute; margin-top: 60px;"></p>
+<p id="speed" style="position: absolute; margin-top: 80px;"></p>
+<p id="r_speed" style="position: absolute; margin-top: 100px;"></p>
+<p id="g_speed" style="position: absolute; margin-top: 120px;"></p>
+<p id="f" style="position: absolute; margin-top: 140px;"></p>
 
-<p id="fps" style="position: absolute;"></p>
 </th>
 </tr>
 </table>
