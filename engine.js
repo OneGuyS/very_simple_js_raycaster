@@ -181,7 +181,7 @@ function distance_to(x1, y1, x2, y2) {
 //colisions (copied from render ray casting but instead of rendering we stop player)
 
 function callVCollision(angle) {
-  const right = Math.abs(Math.floor((angle - 1.570795) / 3.141592) % 2);
+  const right = Math.abs(Math.floor((angle - Math.PI / 2) / Math.PI) % 2);
 
   const firstX = right
     ? Math.floor(player.x / CELL_SIZE) * CELL_SIZE + CELL_SIZE
@@ -216,7 +216,7 @@ function callVCollision(angle) {
 }
 
 function callHCollision(angle) {
-  const up = Math.abs(Math.floor(angle / 3.141592 ) % 2);
+  const up = Math.abs(Math.floor(angle / Math.PI ) % 2);
   const firstY = up
     ? Math.floor(player.y / CELL_SIZE) * CELL_SIZE
     : Math.floor(player.y / CELL_SIZE) * CELL_SIZE + CELL_SIZE;
@@ -261,8 +261,10 @@ function cast_col_ray(angle) {
     player.y += Math.sin(player.angle) * player.speed * -120  * delta;
     player.x += Math.cos(player.angle + toRadians(90)) * player.right_speed * -120  * delta;
     player.y += Math.sin(player.angle + toRadians(90)) * player.right_speed * -120  * delta;
-    player.x += Math.cos(angle) * player.speed * -100  * delta;
-    player.y += Math.sin(angle) * player.speed * -100  * delta;
+    player.x += Math.cos(angle) * Math.abs(player.speed) * -100  * delta;
+    player.y += Math.sin(angle) * Math.abs(player.speed) * -100  * delta;
+    player.x += Math.cos(angle) * Math.abs(player.right_speed) * -100  * delta;
+    player.y += Math.sin(angle) * Math.abs(player.right_speed) * -100  * delta;
     movePlayer();
     i = 1;
   }
@@ -270,8 +272,8 @@ function cast_col_ray(angle) {
 }
 
 function calculate_colision_rays() {
-  const initialAngle = player.angle - toRadians(360) / 2;
-  const numberOfRays = 32;
+  const initialAngle = 0;
+  const numberOfRays = 128;
   const angleStep = toRadians(360) / numberOfRays;
   return Array.from({ length: numberOfRays }, (_, i) => {
     const angle = initialAngle + i * angleStep;
