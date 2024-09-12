@@ -2,7 +2,7 @@
 
 just learning js
 
-To test visit https://odevu.github.io/very_simple_js_raycaster/
+To test visit https://odevu.github.io/VerySimpleJavascriptRaycaster/
 
 its very primitive program with much stuff to do but its learning expierience
 
